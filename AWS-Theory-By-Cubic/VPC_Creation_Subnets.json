@@ -1,0 +1,336 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "VPC Creation: After successfully launching this CloudFormation stack, you will have 2 Public subnets in 2 AZs & 3 private subnets in respective AZs , with IGW & Public & private rounting.",
+
+  "Parameters" : {
+
+    
+    "VpcCidr" : {
+      "Description" : "CIDR address for the VPC to be created.",
+      "Type" : "String",
+      "Default" : "10.120.0.0/16"
+    },
+    "Public1a" : {
+      "Description" : "Address range for a public subnet to be created in AZ1.",
+      "Type" : "String",
+      "Default" : "10.120.101.0/24"
+    },
+    "Management1a" : {
+      "Description" : "Address range for a private subnet to be created in AZ1.",
+      "Type" : "String",
+      "Default" : "10.120.1.0/24"
+    },
+	
+    "Services1a" : {
+      "Description" : "Address range for a private subnet to be created in AZ1.",
+      "Type" : "String",
+      "Default" : "10.120.3.0/24"
+    },
+	"Resources1a" : {
+      "Description" : "Address range for a private subnet to be created in AZ1.",
+      "Type" : "String",
+      "Default" : "10.120.16.0/20"
+    },
+	"Public1b" : {
+      "Description" : "Address range for a public subnet to be created in AZ2.",
+      "Type" : "String",
+      "Default" : "10.120.102.0/24"
+    },
+	 "Management1b" : {
+      "Description" : "Address range for a private subnet to be created in AZ1.",
+      "Type" : "String",
+      "Default" : "10.120.2.0/24"
+    },
+    
+    "Services1b" : {
+      "Description" : "Address range for a private subnet to be created in AZ2.",
+      "Type" : "String",
+      "Default" : "10.120.4.0/24"
+    },
+	"Resources1b" : {
+      "Description" : "Address range for a private subnet to be created in AZ2.",
+      "Type" : "String",
+      "Default" : "10.120.32.0/20"
+    },
+    
+   
+    "AvailabilityZone1" : {
+      "Description" : "First AZ to use for Public1a/Services1a.",
+      "Type" : "String",
+      "Default" : "us-east-1a"
+    },
+	 "AvailabilityZone2" : {
+      "Description" : "First AZ to use for Public1b/Services1b.",
+      "Type" : "String",
+      "Default" : "us-east-1b"
+    }
+    
+	
+  },
+
+  
+
+  "Resources" : {
+
+   
+    "VPC" : {
+      "Type" : "AWS::EC2::VPC",
+      "Properties" : {
+        "CidrBlock" : { "Ref" : "VpcCidr" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Public" }
+        ]
+      }
+    },
+
+    "PubSubnet1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : { "Ref" : "AvailabilityZone1" },
+        "CidrBlock" : { "Ref" : "Public1a" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Public" },
+		  { "Key" : "Name", "Value" : "Public1a" }
+		  
+        ]
+      }
+    },
+	"PubSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : { "Ref" : "AvailabilityZone2" },
+        "CidrBlock" : { "Ref" : "Public1b" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Public" },
+		  { "Key" : "Name", "Value" : "Public1b" }
+		  
+        ]
+      }
+    },
+	
+	"ManagementSubnet1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : { "Ref" : "AvailabilityZone1" },
+        "CidrBlock" : { "Ref" : "Management1a" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Private" },
+		  { "Key" : "Name", "Value" : "Management1a" }
+        ]
+      }
+    },
+	 "ManagementSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : { "Ref" : "AvailabilityZone2" },
+        "CidrBlock" : { "Ref" : "Management1b" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Private" },
+		  { "Key" : "Name", "Value" : "Management1b" }
+        ]
+      }
+    },
+
+    "ServicesSubnet1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : { "Ref" : "AvailabilityZone1" },
+        "CidrBlock" : { "Ref" : "Services1a" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Private" },
+		  { "Key" : "Name", "Value" : "Services1a" }
+        ]
+      }
+    },
+	 "ServicesSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : { "Ref" : "AvailabilityZone1" },
+        "CidrBlock" : { "Ref" : "Services1b" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Private" },
+		  { "Key" : "Name", "Value" : "Services1b" }
+        ]
+      }
+    },
+	 "ResourcesSubnet1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : { "Ref" : "AvailabilityZone1" },
+        "CidrBlock" : { "Ref" : "Resources1a" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Private" },
+		  { "Key" : "Name", "Value" : "Resources1a" }
+        ]
+      }
+    },
+	 "ResourcesSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : { "Ref" : "AvailabilityZone1" },
+        "CidrBlock" : { "Ref" : "Resources1b" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Private" },
+		  { "Key" : "Name", "Value" : "Resources1b" }
+        ]
+      }
+    },
+
+
+    "InternetGateway" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Public" }
+        ]
+      }
+    },
+
+    "GatewayToInternet" : {
+       "Type" : "AWS::EC2::VPCGatewayAttachment",
+       "Properties" : {
+         "VpcId" : { "Ref" : "VPC" },
+         "InternetGatewayId" : { "Ref" : "InternetGateway" }
+       }
+    },
+
+    "PublicRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Public" },
+		  { "Key" : "Name", "Value" : "PublicRouteTable" }
+        ]
+      }
+    },
+
+    "PrivateRouteTableAZ1" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Private" },
+		  { "Key" : "Name", "Value" : "PrivateRouteTableAZ1" }
+        ]
+      }
+    },
+	"PrivateRouteTableAZ2" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "Tags" : [
+          { "Key" : "Application", "Value" : { "Ref" : "AWS::StackName" } },
+          { "Key" : "Network", "Value" : "Private" },
+		  { "Key" : "Name", "Value" : "PrivateRouteTableAZ2" }
+        ]
+      }
+    },
+
+    
+
+    "PublicRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PublicRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "InternetGateway" }
+      }
+    },
+
+   
+   
+
+    "PubSubnet1RTAssoc" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PubSubnet1" },
+        "RouteTableId" : { "Ref" : "PublicRouteTable" }
+      }
+    },
+	 "PubSubnet2RTAssoc" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PubSubnet2" },
+        "RouteTableId" : { "Ref" : "PublicRouteTable" }
+      }
+    },
+
+   
+    "ManagementSubnet1RTAssoc" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "ManagementSubnet1" },
+        "RouteTableId" : { "Ref" : "PrivateRouteTableAZ1" }
+      }
+    },
+
+
+    "ServicesSubnet1RTAssoc" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "ServicesSubnet1" },
+        "RouteTableId" : { "Ref" : "PrivateRouteTableAZ1" }
+      }
+    },
+
+	
+	"ResourcesSubnet1RTAssoc" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "ResourcesSubnet1" },
+        "RouteTableId" : { "Ref" : "PrivateRouteTableAZ1" }
+      }
+    },
+	"ManagementSubnet2RTAssoc" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "ManagementSubnet2" },
+        "RouteTableId" : { "Ref" : "PrivateRouteTableAZ2" }
+      }
+    },
+	
+	"ServicesSubnet2RTAssoc" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "ServicesSubnet2" },
+        "RouteTableId" : { "Ref" : "PrivateRouteTableAZ2" }
+      }
+    },
+
+	
+	"ResourcesSubnet2RTAssoc" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "ResourcesSubnet2" },
+        "RouteTableId" : { "Ref" : "PrivateRouteTableAZ2" }
+      }
+    }
+
+    
+
+   
+  }
+
+ }
